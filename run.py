@@ -19,7 +19,7 @@ def main(resolution, training, debug):
                 print('ESC pressed, stopping the program ...')
                 break
 
-            screenshot, offset_x, offset_y = ai.capture(save=False)
+            screenshot, offset_x, offset_y = ai.capture(save=True)
 
             if screenshot is not None:
                 detected_objs = ai.predict(screenshot)
