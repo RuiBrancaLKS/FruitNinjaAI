@@ -6,7 +6,3 @@ pyautogui
 pywin32
 numpy
 opencv-python
-
-# CUDA version specific torch installation
-# Run this command manually:
-# pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
