@@ -162,7 +162,8 @@ cython_debug/
 #.idea/
 
 # Ignore the datasets folder
-screenshots/
-datasets/
+screenshots/preds/*
+screenshots/training
+datasets/*
 yolo11n.pt
 Original/

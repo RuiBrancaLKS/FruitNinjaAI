@@ -8,16 +8,22 @@ import win32con
 import win32api
 import numpy as np
 import cv2
+import os
 
 class FruitNinjaAI:
-    def __init__(self, model_path, screen_size):
+    def __init__(self, model_path, screen_size, debug=False):
         self.SCREEN_SIZE = screen_size
         self.model = YOLO(model_path)
         self.cuda_available = torch.cuda.is_available()
+        self.debug = debug
         self.left = 0
         self.top = 0
         self.right = 0
         self.bottom = 0
+
+        # Create directory for saving predictions if debug mode is enabled
+        if self.debug:
+            os.makedirs('screenshots/preds', exist_ok=True)
 
         print("PyTorch version:", torch.__version__)
         print("CUDA available:", self.cuda_available)
@@ -97,7 +103,16 @@ class FruitNinjaAI:
                 confidence = box.conf[0]  # Get the confidence score
                 print(f"Detected {label} with confidence {confidence:.2f} at coordinates: ({x1}, {y1}, {x2}, {y2})")
                 detected_objs.append((label, x1, y1, x2, y2))
-    
+
+                # Draw bounding boxes if in debug mode
+                if self.debug:
+                    cv2.rectangle(screenshot, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+                    cv2.putText(screenshot, f'{label} {confidence:.2f}', (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+
+            # Save image with predictions if in debug mode
+            if self.debug:
+                cv2.imwrite(f'screenshots/preds/pred_{int(time.time())}.png', screenshot)
+
         return detected_objs
 
     def perform_action(self, obj, offset_x, offset_y):
