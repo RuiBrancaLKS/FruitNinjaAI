@@ -4,11 +4,11 @@ This repository contains an AI bot designed to play the game Fruit Ninja automat
 
 ## Table of Contents
 
-- Models Available
-- Prerequisites
-- Installation
-- How to Use
-- License
+- [Models Available](#models-available)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [How to Use](#how-to-use)
+- [License](#license)
 
 ## Models Available
 
