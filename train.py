@@ -13,4 +13,4 @@ if __name__ == '__main__':
         print("CUDA is not available. Please check your installation.")
 
     model = YOLO('yolo11n.pt')
-    model.train(data=r'datasets\data.yaml', epochs=50, imgsz=640, device=0)
+    model.train(data=r'datasets\320x320\data.yaml', epochs=50, imgsz=320, device=0)
