@@ -84,7 +84,7 @@ def predictYOLO(model, screenshot):
 """"""
 def perform_action(obj, offset_x, offset_y):
     label, x1, y1, x2, y2 = obj
-    if label != 'bomb':
+    if label != 'Bomb':
         # Calculate the scaling factor based on the original and resized dimensions
         scale_w = (right - left) / 320
         scale_h = (bottom - top) / 320
@@ -139,7 +139,7 @@ if __name__ == '__main__':
                 for _ in range(len(detected_objs)):
                     screenshot, offset_x, offset_y = capture(save=False)
                     detected_objs = predictYOLO(model, screenshot)
-                    if not detected_objs or all(obj[0] == 'bomb' for obj in detected_objs):
+                    if not detected_objs or all(obj[0] == 'Bomb' for obj in detected_objs):
                         break
                     # Perform action on the first detected fruit
                     perform_action(detected_objs[0], offset_x, offset_y)
