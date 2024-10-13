@@ -3,7 +3,6 @@ from ultralytics import YOLO
 import torch
 import time
 import keyboard
-import pyautogui
 import win32gui
 import win32ui
 import win32con
@@ -83,32 +82,31 @@ def predictYOLO(model, screenshot):
     return detected_objs
 
 """"""
-def perform_action(objs, offset_x, offset_y):
-    for obj in objs: #take more prints
-        label, x1, y1, x2, y2 = obj
-        if label != 'bomb':
-            # Calculate the scaling factor based on the original and resized dimensions
-            scale_w = (right - left) / 320
-            scale_h = (bottom - top) / 320
+def perform_action(obj, offset_x, offset_y):
+    label, x1, y1, x2, y2 = obj
+    if label != 'bomb':
+        # Calculate the scaling factor based on the original and resized dimensions
+        scale_w = (right - left) / 320
+        scale_h = (bottom - top) / 320
 
-            # Scale the coordinates back to the original dimensions
-            start_x, start_y = x1 * scale_w + offset_x, y1 * scale_h + offset_y
-            end_x, end_y = x2 * scale_w + offset_x, y2 * scale_h + offset_y
+        # Scale the coordinates back to the original dimensions
+        start_x, start_y = x1 * scale_w + offset_x, y1 * scale_h + offset_y
+        end_x, end_y = x2 * scale_w + offset_x, y2 * scale_h + offset_y
 
-            # Number of steps to move the cursor smoothly
-            steps = 20
-            delta_x = (end_x - start_x) / steps
-            delta_y = (end_y - start_y) / steps
+        # Number of steps to move the cursor smoothly
+        steps = 20
+        delta_x = (end_x - start_x) / steps
+        delta_y = (end_y - start_y) / steps
 
-            # Move to the starting position and simulate the drag
-            win32api.SetCursorPos((int(start_x), int(start_y)))
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-            for i in range(steps):
-                intermediate_x = start_x + delta_x * (i + 1)
-                intermediate_y = start_y + delta_y * (i + 1)
-                win32api.SetCursorPos((int(intermediate_x), int(intermediate_y)))
-                time.sleep(0.01)  # Small delay to simulate smooth movement
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+        # Move to the starting position and simulate the drag
+        win32api.SetCursorPos((int(start_x), int(start_y)))
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+        for i in range(steps):
+            intermediate_x = start_x + delta_x * (i + 1)
+            intermediate_y = start_y + delta_y * (i + 1)
+            win32api.SetCursorPos((int(intermediate_x), int(intermediate_y)))
+            time.sleep(0.01)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
 
 """"""
 if __name__ == '__main__':
@@ -136,5 +134,15 @@ if __name__ == '__main__':
 
         if screenshot is not None:
             detected_objs = predictYOLO(model, screenshot)
-            perform_action(detected_objs, offset_x, offset_y)
-        time.sleep(1)
+
+            if detected_objs:
+                for _ in range(len(detected_objs)):
+                    screenshot, offset_x, offset_y = capture(save=False)
+                    detected_objs = predictYOLO(model, screenshot)
+                    if not detected_objs or all(obj[0] == 'bomb' for obj in detected_objs):
+                        break
+                    # Perform action on the first detected fruit
+                    perform_action(detected_objs[0], offset_x, offset_y)
+                    time.sleep(0.1)
+            else:
+                time.sleep(0.5)
