@@ -34,10 +34,6 @@ Ensure you have the following installed on your system:
 ## Installation
 
 1. **Clone the repository:**
-``` bash
- git clone https://github.com/yourusername/fruit-ninja-ai-bot.git
- cd fruit-ninja-ai-bot
-```
 
 2. **Install the required Python libraries:**
 ``` bash
